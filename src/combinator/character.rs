@@ -1,5 +1,6 @@
 use crate::{Error, Parser, ParserError, Remaining};
 
+/// Try to consume a `str_to_match` at the beginning of the input.
 pub fn label<'a>(str_to_match: &'a str) -> impl Parser<'a, &'a str> {
     move |s: Remaining<'a>| {
         if str_to_match.len() > s.rem_len() {
@@ -35,6 +36,7 @@ pub fn label<'a>(str_to_match: &'a str) -> impl Parser<'a, &'a str> {
     }
 }
 
+/// Try to consume an unique char digit, in the given `base`
 pub fn digit<'a>(base: u32) -> impl Parser<'a, char> {
     move |s: Remaining<'a>| {
         if let Some(c) = s.rem.chars().nth(0) {
@@ -54,6 +56,8 @@ pub fn digit<'a>(base: u32) -> impl Parser<'a, char> {
         }
     }
 }
+/// Try to consume a double quote `"`, everything while this is not a `"`, and then the `"`. Returns only what's
+/// inside the string. Doesn't support multiline string, nor escape char except escaped quote.
 pub fn string<'a>() -> impl Parser<'a, &'a str> {
     // This code is clearly not elegant. Any improvements are welcome
     move |s| {
