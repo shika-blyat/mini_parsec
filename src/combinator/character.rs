@@ -1,9 +1,9 @@
-use crate::{JsonError, Parser, ParserError, Remaining};
+use crate::{Error, Parser, ParserError, Remaining};
 
 pub fn label<'a>(str_to_match: &'a str) -> impl Parser<'a, &'a str> {
     move |s: Remaining<'a>| {
         if str_to_match.len() > s.rem_len() {
-            return Err(JsonError::Failure(
+            return Err(Error::Failure(
                 s,
                 ParserError::new(
                     0..s.rem.find(|c| c == '\n').unwrap_or(s.rem.len()),
@@ -15,7 +15,7 @@ pub fn label<'a>(str_to_match: &'a str) -> impl Parser<'a, &'a str> {
         let chars_to_match = str_to_match.chars();
         for i in chars_to_match.into_iter() {
             if i != schars.next().unwrap() {
-                return Err(JsonError::Failure(
+                return Err(Error::Failure(
                     s,
                     ParserError::new(
                         0..s.rem.find(|c| c == '\n').unwrap_or(s.rem.len()),
@@ -41,13 +41,13 @@ pub fn digit<'a>(base: u32) -> impl Parser<'a, char> {
             if c.is_digit(base) {
                 return Ok((Remaining::new(&s.rem[c.len_utf8()..], s.pos + 1), c));
             } else {
-                Err(JsonError::Failure(
+                Err(Error::Failure(
                     s,
                     ParserError::new(0..1, format!("{} is not a digit", c)),
                 ))
             }
         } else {
-            Err(JsonError::Failure(
+            Err(Error::Failure(
                 s,
                 ParserError::new(0..1, format!("Expected a digit, found nothing")),
             ))
@@ -71,13 +71,13 @@ pub fn string<'a>() -> impl Parser<'a, &'a str> {
                     } else if last_escaped {
                         last_escaped = false;
                     } else if i == '\n' {
-                        return Err(JsonError::Unsavable(
+                        return Err(Error::Unsavable(
                             remaining.pos,
                             ParserError::new(0..k, "Unclosed string delimiter".to_string()),
                         ));
                     }
                 }
-                Err(JsonError::Unsavable(
+                Err(Error::Unsavable(
                     remaining.pos,
                     ParserError::new(
                         0..remaining.rem.len(),

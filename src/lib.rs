@@ -8,23 +8,24 @@ pub use crate::combinator::{character, multi, whitespace};
 pub use crate::error::ParserError;
 
 #[derive(Debug)]
-pub enum JsonError<'a> {
+/// Error
+pub enum Error<'a> {
     Savable(Remaining<'a>),
     Failure(Remaining<'a>, ParserError),
     Unsavable(usize, ParserError),
 }
-impl<'a> JsonError<'a> {
+impl<'a> Error<'a> {
     pub fn rem(&self) -> Remaining<'a> {
         match self {
             Self::Failure(rem, _) => *rem,
             Self::Savable(rem) => *rem,
             Self::Unsavable(_, _) => panic!(
-                "Internal parser error, `Unexpected JsonError.rem() call on an Unsavable variant"
+                "Internal parser error, `Unexpected Error.rem() call on an Unsavable variant"
             ),
         }
     }
 }
-pub trait Parser<'a, T> = FnMut(Remaining<'a>) -> Result<(Remaining<'a>, T), JsonError>;
+pub trait Parser<'a, T> = FnMut(Remaining<'a>) -> Result<(Remaining<'a>, T), Error>;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Remaining<'a> {
