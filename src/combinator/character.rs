@@ -35,7 +35,24 @@ pub fn label<'a>(str_to_match: &'a str) -> impl Parser<'a, &'a str> {
         ))
     }
 }
-
+pub fn identifier<'a>() -> impl Parser<'a, &'a str> {
+    |s: Remaining<'a>| match s.rem.find(|c: char| !(c.is_alphanumeric() || c == '_')) {
+        Some(v) => {
+            if v == 0 {
+                Err(Error::Failure(
+                    s,
+                    ParserError::new(0..1, format!("Not a valid identifier")),
+                ))
+            } else {
+                Ok((Remaining::new(&s.rem[v..], s.pos + v), &s.rem[..v]))
+            }
+        }
+        None => Err(Error::Failure(
+            s,
+            ParserError::new(0..1, format!("Not a valid identifier")),
+        )),
+    }
+}
 /// Try to consume an unique char digit, in the given `base`
 pub fn digit<'a>(base: u32) -> impl Parser<'a, char> {
     move |s: Remaining<'a>| {

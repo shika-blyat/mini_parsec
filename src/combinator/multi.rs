@@ -1,6 +1,6 @@
 use crate::Parser;
 
-/// Call the predicate with the input while it returns Ok(T), and then discard the error and returns a [Vec<T>](std::Vec)
+/// Call the predicate with the input while it returns Ok(T), and then discard the error and returns a [Vec<T>](std::vec::Vec)
 pub fn many<'a, T>(mut predicate: impl Parser<'a, T>) -> impl Parser<'a, Vec<T>> {
     move |s| {
         let mut result = vec![];
@@ -13,7 +13,7 @@ pub fn many<'a, T>(mut predicate: impl Parser<'a, T>) -> impl Parser<'a, Vec<T>>
     }
 }
 /// Try to call the predicate with the input while it returns Ok(T), and then discard the error and
-/// returns a [Vec<T>](std::Vec). If it doesn't work atleast 1 time, the function will fail and return an Err variant
+/// returns a [Vec<T>](std::vec::Vec). If it doesn't work atleast 1 time, the function will fail and return an Err variant
 pub fn many1<'a, T>(mut predicate: impl Parser<'a, T>) -> impl Parser<'a, Vec<T>> {
     move |s| {
         let mut values = vec![];

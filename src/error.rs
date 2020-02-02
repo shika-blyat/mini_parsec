@@ -2,7 +2,7 @@ use std::ops::Range;
 
 #[derive(Debug, Clone)]
 /// The type which contains information about the error
-/// The error itself is represented by an [Error](mini_rparsec::Error)
+/// The error itself is represented by an [Error](crate::Error)
 pub struct ParserError {
     pos_range: Option<Range<usize>>,
     reason: Option<String>,
