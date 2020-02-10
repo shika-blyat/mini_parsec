@@ -1,5 +1,5 @@
 [package]
-name = "mini_rparsec"
+name = "mini_parsec"
 version = "0.1.0"
 authors = ["shika-blyat <abdelzighel@gmail.com>"]
 edition = "2018"
